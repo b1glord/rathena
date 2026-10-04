@@ -22080,6 +22080,49 @@ BUILDIN_FUNC(progressbar)
 }
 
 /**
+ * Display a visual-only progress bar above the attached character.
+ * Unlike progressbar, this command does not stop the script, reserve the
+ * player script state, or wait for CZ_PROGRESS. It is intended for
+ * server-timer driven systems that only need client-side visual feedback.
+ * visualprogressbar "<color>",<seconds>;
+ */
+BUILDIN_FUNC(visualprogressbar)
+{
+	struct map_session_data *sd;
+	const char *color;
+	int second;
+
+	if( !script_rid2sd(sd) )
+		return SCRIPT_CMD_SUCCESS;
+
+	color = script_getstr(st,2);
+	second = script_getnum(st,3);
+
+	if( second < 0 ){
+		ShowError("buildin_visualprogressbar: negative amount('%d') of seconds is not supported\n", second);
+		return SCRIPT_CMD_FAILURE;
+	}
+
+	clif_progressbar(sd, strtol(color, (char **)NULL, 0), (unsigned int)second);
+	return SCRIPT_CMD_SUCCESS;
+}
+
+/**
+ * Cancel a visual-only progress bar on the attached character.
+ * visualprogressbarcancel;
+ */
+BUILDIN_FUNC(visualprogressbarcancel)
+{
+	struct map_session_data *sd;
+
+	if( !script_rid2sd(sd) )
+		return SCRIPT_CMD_SUCCESS;
+
+	clif_progressbar_abort(sd);
+	return SCRIPT_CMD_SUCCESS;
+}
+
+/**
  * Display a progress bar above an NPC
  * progressbar_npc "<color>",<seconds>{,<"NPC Name">};
  */
@@ -27143,6 +27186,8 @@ struct script_function buildin_func[] = {
 	BUILDIN_DEF(setfont,"i"),
 	BUILDIN_DEF(areamobuseskill,"siiivviiiii"),
 	BUILDIN_DEF(progressbar,"si"),
+	BUILDIN_DEF(visualprogressbar,"si"),
+	BUILDIN_DEF(visualprogressbarcancel,""),
 	BUILDIN_DEF(progressbar_npc, "si?"),
 	BUILDIN_DEF(pushpc,"ii"),
 	BUILDIN_DEF(buyingstore,"i"),
