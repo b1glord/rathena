@@ -7195,6 +7195,19 @@ If possible make sure to close all message windows before triggering the progres
 
 ---------------------------------------
 
+*visualprogressbar "<color>",<seconds>;
+*visualprogressbarcancel;
+
+visualprogressbar displays the same client-side character progress bar without
+stopping the script, reserving the player script state, or waiting for a
+CZ_PROGRESS response. It is intended for systems whose timing is controlled by
+server-side timers.
+
+visualprogressbarcancel removes the visual-only bar. These commands do not
+block movement, attack, or skill use by themselves.
+
+---------------------------------------
+
 *progressbar_npc "<color>",<seconds>{,<"NPC Name">};
 
 This command works like progressbar, but displays a progress bar
